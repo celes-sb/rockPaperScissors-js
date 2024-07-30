@@ -13,24 +13,33 @@ export default function Home() {
 
       <div className={styles.description}>
         <div>
-          <strong>Rules to the Game</strong>
+          <h2>
+            <strong>Rules to the Game</strong>
+          </h2>
         </div>
-        <div>You will be playing against the computer.</div>
-        <div>The first one to three points wins.</div>
-        <div>Rock beats Scissors, Scissors beats Paper & Paper beats Rock</div>
+        <br />
+        <div>- You will be playing against the computer.</div>
+        <div>- The first one to three points wins.</div>
         <div>
-          If the player and computer choose the same option (e.g: Paper and
+          - Rock beats Scissors, Scissors beats Paper & Paper beats Rock
+        </div>
+        <div>
+          - If the player and computer choose the same option (e.g: Paper and
           Paper), then no one gets the point.
         </div>
       </div>
-      
+
       <RockPaperScissors />
 
-      <footer>
-        <p>
-          Made by
-          <code className={styles.code}> Celeste S. Bareiro</code>
-        </p>
+      <footer className={styles.footer}>
+        <a
+          href="https://www.github.com/celes-sb"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={styles.footerLink}
+        >
+          Made by Celeste S. Bareiro
+        </a>
       </footer>
     </main>
   );

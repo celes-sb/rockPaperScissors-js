@@ -70,6 +70,20 @@
   margin-bottom: 0.7rem;
 }
 
+.button {
+  background-color: #ffffff;
+  color: #000000;
+  border: 2px solid #000000;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  transition: background-color 200ms, color 200ms, border 200ms;
+}
+
+.button:hover {
+  background-color: #000000;
+  color: #ffffff;
+}
+
 /* Enable hover only on non-touch devices */
 @media (hover: hover) and (pointer: fine) {
   .card:hover {
@@ -154,4 +168,16 @@
   to {
     transform: rotate(0deg);
   }
+}
+
+@media (prefers-color-scheme: dark) {
+  .button {
+    background-color: #000000;
+    color: #ffffff;
+    border-color: #ffffff;
+  }
+
+  .result {
+  color: rgba(220, 20, 60, 0.168);
+}
 }

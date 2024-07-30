@@ -1,55 +1,121 @@
-'use state'
+"use client";
 
-//import React, { useState } from 'react';
+import React, { useState, useRef } from "react";
 import styles from "./page.module.css";
 
 function RockPaperScissors() {
+  const [playerScore, setPlayerScore] = useState(0);
+  const [computerScore, setComputerScore] = useState(0);
+  const [roundResultsMsg, setRoundResultsMsg] = useState("");
+  const [winnerMsg, setWinnerMsg] = useState("");
+  const resetGameBtnRef = useRef(null);
+  const optionsContainerRef = useRef(null);
+
+  const getRandomComputerResult = () => {
+    const options = ["Rock", "Paper", "Scissors"];
+    const randomIndex = Math.floor(Math.random() * options.length);
+    return options[randomIndex];
+  };
+
+  const hasPlayerWonTheRound = (player, computer) => {
+    return (
+      (player === "Rock" && computer === "Scissors") ||
+      (player === "Scissors" && computer === "Paper") ||
+      (player === "Paper" && computer === "Rock")
+    );
+  };
+
+  const getRoundResults = (userOption) => {
+    const computerResult = getRandomComputerResult();
+
+    if (hasPlayerWonTheRound(userOption, computerResult)) {
+      setPlayerScore(playerScore + 1);
+      return `Player wins! ${userOption} beats ${computerResult}`;
+    } else if (computerResult === userOption) {
+      return `It's a tie! Both chose ${userOption}`;
+    } else {
+      setComputerScore(computerScore + 1);
+      return `Computer wins! ${computerResult} beats ${userOption}`;
+    }
+  };
+
+  const showResults = (userOption) => {
+    const result = getRoundResults(userOption);
+    setRoundResultsMsg(result);
+
+    if (playerScore === 3 || computerScore === 3) {
+      setWinnerMsg(
+        `${playerScore === 3 ? "Player" : "Computer"} has won the game!`
+      );
+
+      resetGameBtnRef.current.style.display = "block";
+      optionsContainerRef.current.style.display = "none";
+    }
+  };
+
+  const resetGame = () => {
+    setPlayerScore(0);
+    setComputerScore(0);
+    setPlayerScoreSpanElement(playerScore);
+    setComputerScoreSpanElement(computerScore);
+    resetGameBtnRef.current.style.display = "none";
+    optionsContainerRef.current.style.display = "block";
+    setWinnerMsg("");
+    setRoundResultsMsg("");
+  };
+
   return (
     <>
       <div className={styles.grid2}>
         <div className={styles.card}>
           <h4>Player Score:</h4>
           <strong>
-            <span className="score" id="player-score">
-              0
-            </span>
+            <span className="score">{playerScore}</span>
           </strong>
         </div>
 
         <div className={styles.card}>
           <h4>Computer Score:</h4>
           <strong>
-            <span className="score" id="computer-score">
-              0
-            </span>
+            <span className="score">{computerScore}</span>
           </strong>
+        </div>
+      </div>
+
+      <div className="options-container" ref={optionsContainerRef}>
+        <div className="btn-container">
+          <button className={styles.button} onClick={() => showResults("Rock")}>
+            Rock
+          </button>
+          <button
+            className={styles.button}
+            onClick={() => showResults("Paper")}
+          >
+            Paper
+          </button>
+          <button
+            className={styles.button}
+            onClick={() => showResults("Scissors")}
+          >
+            Scissors
+          </button>
         </div>
       </div>
 
       <div className={styles.grid2}>
         <div className={styles.card}>
-          <h4>resultado</h4>
+          <h4>Resultado</h4>
         </div>
       </div>
 
-      <section className="options-container">
-        <div className="btn-container">
-          <button id="rock-btn" className="btn">
-            Rock
-          </button>
-          <button id="paper-btn" className="btn">
-            Paper
-          </button>
-          <button id="scissors-btn" className="btn">
-            Scissors
-          </button>
-        </div>
-      </section>
-
       <div className="results-container">
-        <p id="results-msg"></p>
-        <p id="winner-msg"></p>
-        <button className="btn" id="reset-game-btn">
+        <p>{roundResultsMsg}</p>
+        <p>{winnerMsg}</p>
+        <button
+          className={styles.button}
+          ref={resetGameBtnRef}
+          onClick={resetGame}
+        >
           Play again?
         </button>
       </div>
@@ -58,88 +124,3 @@ function RockPaperScissors() {
 }
 
 export default RockPaperScissors;
-
-/*
-function getRandomComputerResult() {
-  const options = ["Rock", "Paper", "Scissors"];
-  const randomIndex = Math.floor(Math.random() * options.length);
-  return options[randomIndex];
-}
-
-function hasPlayerWonTheRound(player, computer) {
-  return (
-    (player === "Rock" && computer === "Scissors") ||
-    (player === "Scissors" && computer === "Paper") ||
-    (player === "Paper" && computer === "Rock")
-  );
-}
-
-let playerScore = 0;
-let computerScore = 0;
-
-function getRoundResults(userOption) {
-  const computerResult = getRandomComputerResult();
-
-  if (hasPlayerWonTheRound(userOption, computerResult)) {
-    playerScore++;
-    return `Player wins! ${userOption} beats ${computerResult}`;
-  } else if (computerResult === userOption) {
-    return `It's a tie! Both chose ${userOption}`;
-  } else {
-    computerScore++;
-    return `Computer wins! ${computerResult} beats ${userOption}`;
-  }
-}
-
-const playerScoreSpanElement = document.getElementById("player-score");
-const computerScoreSpanElement = document.getElementById("computer-score");
-const roundResultsMsg = document.getElementById("results-msg");
-const winnerMsgElement = document.getElementById("winner-msg");
-const optionsContainer = document.querySelector(".options-container");
-const resetGameBtn = document.getElementById("reset-game-btn");
-
-function showResults(userOption) {
-  roundResultsMsg.innerText = getRoundResults(userOption);
-  computerScoreSpanElement.innerText = computerScore;
-  playerScoreSpanElement.innerText = playerScore;
-
-  if (playerScore === 3 || computerScore === 3) {
-    winnerMsgElement.innerText = `${
-      playerScore === 3 ? "Player" : "Computer"
-    } has won the game!`;
-
-    resetGameBtn.style.display = "block";
-    optionsContainer.style.display = "none";
-  }
-
-};
-
-function resetGame() {
-  playerScore = 0;
-  computerScore = 0;
-  playerScoreSpanElement.innerText = playerScore;
-  computerScoreSpanElement.innerText = computerScore;
-  resetGameBtn.style.display = "hide";
-  optionsContainer.style.display = "block";
-  winnerMsgElement.innerText = "";
-  roundResultsMsg.innerText = "";
-};
-
-resetGameBtn.addEventListener("click", resetGame);
-
-const rockBtn = document.getElementById("rock-btn");
-const paperBtn = document.getElementById("paper-btn");
-const scissorsBtn = document.getElementById("scissors-btn");
-
-rockBtn.addEventListener("click", function () {
-  showResults("Rock");
-});
-
-paperBtn.addEventListener("click", function () {
-  showResults("Paper");
-});
-
-scissorsBtn.addEventListener("click", function () {
-  showResults("Scissors");
-});
-*/
